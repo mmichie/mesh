@@ -1,11 +1,14 @@
+#!/usr/bin/env python3
+
 import os
+import shutil
 import sys
 import traceback
 
-builtin_cmds = {'cd', 'pwd',}
+builtin_cmds = {'cd', 'pwd', 'exit',}
 
 def prompt():
-    print '%s $ ' % os.getcwd(),
+    print('%s $ ' % os.getcwd(), end='', flush=True)
 
 def read_command():
     return sys.stdin.readline()
@@ -14,13 +17,18 @@ def parse_command(cmd_text):
     return (cmd_text, cmd_text.strip().split())
 
 def record_command(command):
+    print(command)
     return True
 
-def run_builtin(cmd):
+def run_builtin(cmd, cmd_text):
+    if shutil.which(cmd[0]):
+        os.system(cmd_text)
     if cmd[0] == 'cd':
         os.chdir(cmd[1])
     elif cmd[0] == 'pwd':
-        print os.getcwd()
+        print(os.getcwd())
+    elif cmd[0] == 'exit':
+        sys.exit()
 
 if __name__ == "__main__":
     while True:
@@ -31,9 +39,11 @@ if __name__ == "__main__":
             record_command(cmd)
 
             if cmd[0] in builtin_cmds:
-                run_builtin(cmd)
+                run_builtin(cmd, cmd_text)
             else:
                 #pid = subprocess.Popen(cmd_text, stdin=None, stdout=None, shell=True)
                 os.system(cmd_text)
+        except SystemExit:
+            break
         except:
             traceback.print_exc()
