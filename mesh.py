@@ -3,21 +3,25 @@
 import os
 import shutil
 import sys
+import readline
 import traceback
 
+
+readline.parse_and_bind('tab: complete')
+readline.parse_and_bind('set editing-mode vi')
 builtin_cmds = {'cd', 'pwd', 'exit',}
 
 def prompt():
-    print('%s $ ' % os.getcwd(), end='', flush=True)
+    return '%s $ ' % os.getcwd()
 
 def read_command():
-    return sys.stdin.readline()
+    line = input(prompt())
+    return line
 
 def parse_command(cmd_text):
     return (cmd_text, cmd_text.strip().split())
 
 def record_command(command):
-    print(command)
     return True
 
 def run_builtin(cmd, cmd_text):
@@ -33,7 +37,6 @@ def run_builtin(cmd, cmd_text):
 if __name__ == "__main__":
     while True:
         try:
-            prompt()
             cmd_text = read_command()
             cmd_text, cmd = parse_command(cmd_text)
             record_command(cmd)
