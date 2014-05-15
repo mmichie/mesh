@@ -6,13 +6,12 @@ import sys
 import readline
 import traceback
 
-
 readline.parse_and_bind('tab: complete')
 readline.parse_and_bind('set editing-mode vi')
 builtin_cmds = {'cd', 'pwd', 'exit',}
 
 def prompt():
-    return '%s $ ' % os.getcwd()
+    return '%s$ ' % os.getcwd()
 
 def read_command():
     line = input(prompt())
