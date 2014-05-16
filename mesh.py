@@ -45,7 +45,13 @@ if __name__ == "__main__":
             else:
                 #pid = subprocess.Popen(cmd_text, stdin=None, stdout=None, shell=True)
                 os.system(cmd_text)
+        except KeyboardInterrupt:
+            print('')
+            pass
         except SystemExit:
+            break
+        except EOFError:
+            print('')
             break
         except:
             traceback.print_exc()
