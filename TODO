@@ -1,0 +1,2 @@
+
+* Break cmd_text and command into an object
