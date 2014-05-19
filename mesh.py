@@ -38,6 +38,11 @@ def record_command(command):
 def run_builtin(command):
     if command.command[0] == 'cd':
         prev_cwd = os.getcwd()
+
+        # no point in doing work if you don't give us a place to go
+        if len(command.command) <2:
+            return
+
         if command.command[1] == '-':
             if 'OLDPWD' in os.environ:
                 os.chdir(os.environ['OLDPWD'])
