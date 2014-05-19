@@ -22,7 +22,11 @@ def setup():
     logging.info('Set readline modes')
 
 def prompt():
-    return '%s$ ' % os.getcwd()
+    cwd = os.getcwd()
+    if cwd == os.path.expanduser('~'):
+        cwd = '~/'
+
+    return '%s$ ' % cwd
 
 def read_command():
     line = input(prompt())
@@ -33,7 +37,10 @@ def record_command(command):
 
 def run_builtin(command):
     if command.command[0] == 'cd':
-        os.chdir(command.command[1])
+        if command.command[1] == '~':
+            os.chdir(os.path.expanduser('~'))
+        else:
+            os.chdir(command.command[1])
         logging.debug('Built in chdir to: %s' % command.command[1])
     elif command.command[0] == 'pwd':
         print(os.getcwd())
