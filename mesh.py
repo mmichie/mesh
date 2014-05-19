@@ -17,6 +17,7 @@ def setup():
     logging.basicConfig(filename=mesh_dir + 'mesh.log', level=logging.DEBUG)
     readline.parse_and_bind('tab: complete')
     readline.parse_and_bind('set editing-mode vi')
+    logging.info('Set readline modes')
 
 def prompt():
     return '%s$ ' % os.getcwd()
@@ -26,7 +27,7 @@ def read_command():
     return line
 
 def record_command(command):
-    return True
+    logging.info('Recording %s' % command)
 
 def run_builtin(command):
     if shutil.which(command.command[0]):

@@ -10,6 +10,9 @@ class Command:
         self.command = self.parse_command(command_text)
         self.alias = self.substitute_alias()
 
+    def __str__(self):
+        return self.text
+
     def parse_command(self, command_text):
         return command_text.strip().split()
 
