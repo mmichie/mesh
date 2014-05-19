@@ -37,10 +37,18 @@ def record_command(command):
 
 def run_builtin(command):
     if command.command[0] == 'cd':
-        if command.command[1] == '~':
+        prev_cwd = os.getcwd()
+        if command.command[1] == '-':
+            if 'OLDPWD' in os.environ:
+                os.chdir(os.environ['OLDPWD'])
+            else:
+                print('No previous directory set')
+        elif command.command[1] == '~':
             os.chdir(os.path.expanduser('~'))
         else:
             os.chdir(command.command[1])
+
+        os.environ['OLDPWD'] = prev_cwd
         logging.debug('Built in chdir to: %s' % command.command[1])
     elif command.command[0] == 'pwd':
         print(os.getcwd())
