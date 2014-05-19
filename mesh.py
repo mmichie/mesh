@@ -6,11 +6,10 @@ import sys
 import readline
 import traceback
 
-from alias import aliases
+from command import Command
 
 readline.parse_and_bind('tab: complete')
 readline.parse_and_bind('set editing-mode vi')
-builtin_cmds = {'cd', 'pwd', 'exit', 'alias',}
 
 def prompt():
     return '%s$ ' % os.getcwd()
@@ -19,40 +18,29 @@ def read_command():
     line = input(prompt())
     return line
 
-def parse_command(cmd_text):
-    return (cmd_text, cmd_text.strip().split())
-
 def record_command(command):
     return True
 
-def substitute_alias(cmd, cmd_text):
-    if cmd[0] in aliases.keys():
-        return aliases[cmd[0]] + ' ' + ' '.join(cmd[1:])
-    else:
-        return cmd_text
-
-def run_builtin(cmd, cmd_text):
-    if shutil.which(cmd[0]):
-        os.system(cmd_text)
-    elif cmd[0] == 'cd':
-        os.chdir(cmd[1])
-    elif cmd[0] == 'pwd':
+def run_builtin(command):
+    if shutil.which(command.command[0]):
+        os.system(command.text)
+    elif command.command[0] == 'cd':
+        os.chdir(command.command[1])
+    elif command.command[0] == 'pwd':
         print(os.getcwd())
-    elif cmd[0] == 'exit':
+    elif command.command[0] == 'exit':
         sys.exit()
 
 if __name__ == "__main__":
     while True:
         try:
-            cmd_text = read_command()
-            cmd_text, cmd = parse_command(cmd_text)
-            cmd_text = substitute_alias(cmd, cmd_text)
-            record_command(cmd)
+            command = Command(read_command())
+            record_command(command)
 
-            if cmd[0] in builtin_cmds:
-                run_builtin(cmd, cmd_text)
+            if command.builtin():
+                run_builtin(command)
             else:
-                os.system(cmd_text)
+                os.system(command.alias)
         except KeyboardInterrupt:
             print('')
             pass
