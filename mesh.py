@@ -10,7 +10,11 @@ import traceback
 from command import Command
 
 def setup():
-    logging.basicConfig(filename='mesh.log', level=logging.DEBUG)
+    mesh_dir = os.path.expanduser('~') + '/.mesh/'
+    if not os.path.exists(mesh_dir):
+        os.mkdir(mesh_dir, mode=0o700)
+    
+    logging.basicConfig(filename=mesh_dir + 'mesh.log', level=logging.DEBUG)
     readline.parse_and_bind('tab: complete')
     readline.parse_and_bind('set editing-mode vi')
 
