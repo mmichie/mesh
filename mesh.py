@@ -6,6 +6,8 @@ import sys
 import readline
 import traceback
 
+import termcolor
+
 from command import Command
 
 def setup():
@@ -26,7 +28,7 @@ def prompt():
     if cwd == os.path.expanduser('~'):
         cwd = '~/'
 
-    return '%s$ ' % cwd
+    return '┌─[][' + termcolor.colored(cwd, 'cyan') + ']\n└─▪ '
 
 def read_command():
     line = input(prompt())
