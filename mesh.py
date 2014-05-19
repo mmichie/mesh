@@ -8,8 +8,9 @@ import traceback
 
 from command import Command
 
-readline.parse_and_bind('tab: complete')
-readline.parse_and_bind('set editing-mode vi')
+def setup():
+    readline.parse_and_bind('tab: complete')
+    readline.parse_and_bind('set editing-mode vi')
 
 def prompt():
     return '%s$ ' % os.getcwd()
@@ -32,6 +33,9 @@ def run_builtin(command):
         sys.exit()
 
 if __name__ == "__main__":
+
+    setup()
+
     while True:
         try:
             command = Command(read_command())
