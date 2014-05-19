@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
 
+import logging
 import os
 import shutil
 import sys
@@ -9,6 +10,7 @@ import traceback
 from command import Command
 
 def setup():
+    logging.basicConfig(filename='mesh.log', level=logging.DEBUG)
     readline.parse_and_bind('tab: complete')
     readline.parse_and_bind('set editing-mode vi')
 
