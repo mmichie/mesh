@@ -1,5 +1,6 @@
 import logging
 import os
+import shutil
 import sys
 
 from alias import aliases
@@ -47,8 +48,12 @@ class Builtin(Command): pass
 
 class EchoBuiltin(Builtin):
     def run(self):
-        print(' '.join(self.command[1:]))
-        logging.debug('Built in echo')
+        if shutil.which('echo'):
+            os.system(self.text)
+            logging.debug('Using system echo')
+        else:
+            print(' '.join(self.command[1:]))
+            logging.debug('Built in echo')
 
 class ChangeDirectoryBuiltin(Builtin):
     def run(self):
