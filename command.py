@@ -1,3 +1,6 @@
+import logging
+import os
+import sys
 
 from alias import aliases
 
@@ -27,4 +30,72 @@ class Command:
             return True
         else:
             return False
+
+    def run(self):
+        os.system(self.alias)
+
+class NullCommand(Command):
+    def __init__(self, command_text):
+        self.text = command_text
+        self.command = ['']
+        self.alias = ''
+
+    def run(self):
+        pass
+
+class Builtin(Command): pass
+
+class EchoBuiltin(Builtin):
+    def run(self):
+        print(' '.join(self.command[1:]))
+        logging.debug('Built in echo')
+
+class ChangeDirectoryBuiltin(Builtin):
+    def run(self):
+        prev_cwd = os.getcwd()
+
+        # no point in doing work if you don't give us a place to go
+        if len(self.command) <2:
+            return
+
+        if self.command[1] == '-':
+            if 'OLDPWD' in os.environ:
+                os.chdir(os.environ['OLDPWD'])
+            else:
+                print('No previous directory set')
+        elif self.command[1] == '~':
+            os.chdir(os.path.expanduser('~'))
+        else:
+            os.chdir(self.command[1])
+
+        os.environ['OLDPWD'] = prev_cwd
+        logging.debug('Built in chdir to: %s' % self.command[1])
+
+class PrintWorkingDirectoryBuiltin(Builtin):
+    def run(self):
+        print(os.getcwd())
+        logging.debug('Built in pwd')
+
+class ExitBuiltin(Builtin):
+    def run(self):
+        sys.exit()
+        logging.debug('Built in exit')
+
+class CommandFactory:
+
+    def create_command(command_text):
+        command_split = command_text.split()
+
+        if len(command_split) == 0:
+            return NullCommand(command_text)
+        elif command_split[0] == 'cd':
+            return ChangeDirectoryBuiltin(command_text)
+        elif command_split[0] == 'pwd':
+            return PrintWorkingDirectoryBuiltin(command_text)
+        elif command_split[0] == 'exit':
+            return ExitBuiltin(command_text)
+        elif command_split[0] == 'echo':
+            return EchoBuiltin(command_text)
+        else:
+            return Command(command_text)
 

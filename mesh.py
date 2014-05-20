@@ -2,13 +2,12 @@
 
 import logging
 import os
-import sys
 import readline
 import traceback
 
 import termcolor
 
-from command import Command
+from command import CommandFactory
 
 def setup():
     FORMAT = '%(asctime)s - %(name)s - %(levelname)s - %(message)s'
@@ -37,49 +36,15 @@ def read_command():
 def record_command(command):
     logging.info('Recording %s' % command)
 
-def run_builtin(command):
-    if command.command[0] == 'cd':
-        prev_cwd = os.getcwd()
-
-        # no point in doing work if you don't give us a place to go
-        if len(command.command) <2:
-            return
-
-        if command.command[1] == '-':
-            if 'OLDPWD' in os.environ:
-                os.chdir(os.environ['OLDPWD'])
-            else:
-                print('No previous directory set')
-        elif command.command[1] == '~':
-            os.chdir(os.path.expanduser('~'))
-        else:
-            os.chdir(command.command[1])
-
-        os.environ['OLDPWD'] = prev_cwd
-        logging.debug('Built in chdir to: %s' % command.command[1])
-    elif command.command[0] == 'pwd':
-        print(os.getcwd())
-        logging.debug('Built in pwd')
-    elif command.command[0] == 'exit':
-        sys.exit()
-        logging.debug('Built in exit')
-    elif command.command[0] == 'echo':
-        print(' '.join(command.command[1:]))
-        logging.debug('Built in echo')
-
 if __name__ == "__main__":
 
     setup()
 
     while True:
         try:
-            command = Command(read_command())
+            command = CommandFactory.create_command(read_command())
             record_command(command)
-
-            if command.builtin():
-                run_builtin(command)
-            else:
-                os.system(command.alias)
+            command.run()
         except KeyboardInterrupt:
             print('')
             pass
