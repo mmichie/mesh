@@ -61,8 +61,11 @@ def run_builtin(command):
         print(os.getcwd())
         logging.debug('Built in pwd')
     elif command.command[0] == 'exit':
-        logging.debug('Built in exit')
         sys.exit()
+        logging.debug('Built in exit')
+    elif command.command[0] == 'echo':
+        print(' '.join(command.command[1:]))
+        logging.debug('Built in echo')
 
 if __name__ == "__main__":
 

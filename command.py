@@ -1,7 +1,7 @@
 
 from alias import aliases
 
-builtin_cmds = {'cd', 'pwd', 'exit', 'alias',}
+builtin_cmds = {'cd', 'pwd', 'exit', 'alias', 'echo',}
 
 class Command:
  
