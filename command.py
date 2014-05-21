@@ -59,11 +59,11 @@ class ChangeDirectoryBuiltin(Builtin):
     def run(self):
         prev_cwd = os.getcwd()
 
-        # no point in doing work if you don't give us a place to go
-        if len(self.command) <2:
-            return
-
-        if self.command[1] == '-':
+        # return home toto
+        if len(self.command) < 2:
+            os.chdir(os.path.expanduser('~'))
+            self.command.append('~')
+        elif self.command[1] == '-':
             if 'OLDPWD' in os.environ:
                 os.chdir(os.environ['OLDPWD'])
             else:
