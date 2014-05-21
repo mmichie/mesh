@@ -6,10 +6,12 @@ import readline
 import traceback
 
 import termcolor
+import history
 
 from command import CommandFactory
 
 def setup():
+
     FORMAT = '%(asctime)s - %(name)s - %(levelname)s - %(message)s'
 
     mesh_dir = os.path.expanduser('~') + '/.mesh/'
@@ -34,6 +36,7 @@ def read_command():
     return line
 
 def record_command(command):
+    history.recorder.insert(command.text)
     logging.info('Recording %s' % command)
 
 if __name__ == "__main__":
