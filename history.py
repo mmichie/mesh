@@ -3,6 +3,8 @@ import datetime
 import sqlite3
 import os
 
+import config
+
 class BaseHistory:
     __metaclass__  = abc.ABCMeta
 
@@ -41,8 +43,7 @@ class SQLiteHistory(BaseHistory):
                     UNIQUE(session_id, command_no)
               )'''
 
-        db_filename = os.path.expanduser('~') + '/.mesh/history.sqlite'
-        self.conn = sqlite3.connect(db_filename, detect_types=sqlite3.PARSE_DECLTYPES)
+        self.conn = sqlite3.connect(config.db_filename, detect_types=sqlite3.PARSE_DECLTYPES)
 
         with self.conn:
             c = self.conn.cursor()
