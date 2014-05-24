@@ -4,8 +4,9 @@ import logging
 import os
 import readline
 import traceback
-
 import termcolor
+
+import config
 import history
 
 from command import CommandFactory
@@ -14,12 +15,10 @@ def setup():
 
     FORMAT = '%(asctime)s - %(name)s - %(levelname)s - %(message)s'
 
-    mesh_dir = os.path.expanduser('~') + '/.mesh/'
-    if not os.path.exists(mesh_dir):
-        os.mkdir(mesh_dir, mode=0o700)
+    if not os.path.exists(config.mesh_dir):
+        os.mkdir(config.mesh_dir, mode=0o700)
     
-    logging.basicConfig(filename=mesh_dir + 'mesh.log', level=logging.DEBUG, format=FORMAT)
-
+    logging.basicConfig(filename=config.mesh_dir + 'mesh.log', level=logging.DEBUG, format=FORMAT)
     readline.parse_and_bind('tab: complete')
     readline.parse_and_bind('set editing-mode vi')
     logging.info('Set readline modes')
@@ -59,3 +58,5 @@ if __name__ == "__main__":
         except:
             logging.exception('Uncaught exception')
             traceback.print_exc()
+
+# vim: set ft=python:
