@@ -1,2 +1,3 @@
 
-DONE - Break cmd_text and command into an object
+[X] - Break cmd_text and command into an object
+[ ] - Investigate rlcompleter for Python completion
