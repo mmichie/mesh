@@ -43,7 +43,7 @@ class Command:
         self.return_code = os.system(self.alias)
         
         self.end_time = int(time.time())
-        self.duration = self.end_time = self.start_time
+        self.duration = self.end_time - self.start_time
 
 class NullCommand(Command):
     def __init__(self, command_text):
@@ -58,6 +58,7 @@ class Builtin(Command): pass
 
 class EchoBuiltin(Builtin):
     def run(self):
+        self.start_time = int(time.time())
         if shutil.which('echo'):
             os.system(self.text)
             logging.debug('Using system echo')
@@ -65,8 +66,13 @@ class EchoBuiltin(Builtin):
             print(' '.join(self.command[1:]))
             logging.debug('Built in echo')
 
+        self.return_code = 0
+        self.end_time = int(time.time())
+        self.duration = self.end_time - self.start_time
+
 class ChangeDirectoryBuiltin(Builtin):
     def run(self):
+        self.start_time = int(time.time())
         prev_cwd = os.getcwd()
 
         # return home toto
@@ -84,16 +90,27 @@ class ChangeDirectoryBuiltin(Builtin):
             os.chdir(self.command[1])
 
         os.environ['OLDPWD'] = prev_cwd
+        self.return_code = 0
+        self.end_time = int(time.time())
+        self.duration = self.end_time - self.start_time
         logging.debug('Built in chdir to: %s' % self.command[1])
 
 class PrintWorkingDirectoryBuiltin(Builtin):
     def run(self):
+        self.start_time = int(time.time())
         print(os.getcwd())
+        self.end_time = int(time.time())
+        self.duration = self.end_time - self.start_time
+        self.return_code = 0
         logging.debug('Built in pwd')
 
 class ExitBuiltin(Builtin):
     def run(self):
+        self.start_time = int(time.time())
         sys.exit()
+        self.end_time = int(time.time())
+        self.duration = self.end_time - self.start_time
+        self.return_code = 0
         logging.debug('Built in exit')
 
 class CommandFactory:
