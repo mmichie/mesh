@@ -1,7 +1,5 @@
 import abc
-import datetime
 import sqlite3
-import os
 
 import config
 
@@ -25,35 +23,36 @@ class SQLiteHistory(BaseHistory):
 
     def __init__(self):
         command_create_sql = \
-            '''CREATE TABLE IF NOT EXISTS commands(
+            '''CREATE TABLE IF NOT EXISTS command(
                     id integer primary key autoincrement,
                     session_id integer not null,
-                    shell_level integer not null,
-                    command_no integer,
                     tty varchar(20) not null,
                     euid int(16) not null,
                     cwd varchar(256) not null,
-                    rval int(5) not null,
+                    return_code int(5) not null,
                     start_time integer not null,
                     end_time integer not null,
                     duration integer not null,
-                    pipe_cnt int(3),
-                    pipe_vals varchar(80),
-                    command varchar(1000) not null,
-                    UNIQUE(session_id, command_no)
+                    command varchar(1000) not null
               )'''
 
-        self.conn = sqlite3.connect(config.db_filename, detect_types=sqlite3.PARSE_DECLTYPES)
+        self.conn = sqlite3.connect(
+                config.db_filename, 
+                detect_types=sqlite3.PARSE_DECLTYPES
+        )
 
         with self.conn:
             c = self.conn.cursor()
             c.execute(command_create_sql)
 
-    def insert(self, statement):
+    def insert(self, cmd, session_id):
         with self.conn:
             c = self.conn.cursor()
-            c.execute('INSERT INTO history(datetime, statement) VALUES (?, ?)',
-                    (datetime.datetime.now(), statement))
+            c.execute('INSERT INTO command(session_id, tty, euid, cwd, \
+                start_time, end_time, duration, command, return_code) VALUES \
+                (?, ?, ?, ?, ?, ?, ?, ?, ?)', (session_id, cmd.tty, cmd.euid,
+                    cmd.cwd, cmd.start_time, cmd.end_time, cmd.duration,
+                    cmd.command[0], cmd.return_code))
 
     def dump(self):
         with self.conn:

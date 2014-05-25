@@ -8,6 +8,7 @@ import termcolor
 
 import config
 import history
+import session
 
 from command import CommandFactory
 
@@ -34,19 +35,20 @@ def read_command():
     line = input(prompt())
     return line
 
-def record_command(command):
-    history.recorder.insert(command.text)
+def record_command(command, session_id):
+    history.recorder.insert(command, session_id)
     logging.info('Recording %s' % command)
 
 if __name__ == "__main__":
 
     setup()
+    session = session.Session()
 
     while True:
         try:
             command = CommandFactory.create_command(read_command())
-            record_command(command)
             command.run()
+            record_command(command, session.session_id)
         except KeyboardInterrupt:
             print('')
             pass

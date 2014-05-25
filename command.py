@@ -2,6 +2,7 @@ import logging
 import os
 import shutil
 import sys
+import time
 
 from alias import aliases
 
@@ -13,6 +14,11 @@ class Command:
         self.text = command_text
         self.command = self.parse_command(command_text)
         self.alias = self.substitute_alias()
+
+        self.command_line = self.text
+        self.tty = os.ttyname(sys.stdin.fileno())
+        self.euid = os.geteuid()
+        self.cwd = os.getcwd()
 
     def __str__(self):
         return self.text
@@ -33,7 +39,11 @@ class Command:
             return False
 
     def run(self):
-        os.system(self.alias)
+        self.start_time = int(time.time())
+        self.return_code = os.system(self.alias)
+        
+        self.end_time = int(time.time())
+        self.duration = self.end_time = self.start_time
 
 class NullCommand(Command):
     def __init__(self, command_text):
