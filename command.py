@@ -84,8 +84,8 @@ class ChangeDirectoryBuiltin(Builtin):
                 os.chdir(os.environ['OLDPWD'])
             else:
                 print('No previous directory set')
-        elif self.command[1] == '~':
-            os.chdir(os.path.expanduser('~'))
+        elif self.command[1].startswith('~'):
+            os.chdir(os.path.expanduser('~') + '/' + self.command[1][2:])
         else:
             os.chdir(self.command[1])
 
