@@ -33,7 +33,7 @@ class Command:
 
     def substitute_alias(self):
         if self.command in aliases.keys():
-            return aliases[self.command] + ' '.join(self.args)
+            return aliases[self.command] + ' ' + ' '.join(self.args)
         else:
             return self.text
 
@@ -56,7 +56,7 @@ class Command:
             if pid: # parent
                 os.waitpid(pid, 0)
             else: # child
-                os.execvp(self.command, (self.command,) + tuple(self.args))
+                os.execvp(self.command, (self.command,) + tuple(self.alias.split()[1:]))
 
         self.return_code = 0
         self.end_time = int(time.time())
