@@ -56,7 +56,6 @@ class Command:
             if pid: # parent
                 os.waitpid(pid, 0)
             else: # child
-                print('!!!%s:%s!!!' % (self.command, self.args))
                 os.execvp(self.command, (self.command,) + tuple(self.args))
 
         self.return_code = 0
