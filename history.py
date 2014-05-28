@@ -33,7 +33,8 @@ class SQLiteHistory(BaseHistory):
                     start_time integer not null,
                     end_time integer not null,
                     duration integer not null,
-                    command varchar(1000) not null
+                    command varchar(1000) not null,
+                    args varchar(1000) not null
               )'''
 
         self.conn = sqlite3.connect(
@@ -49,10 +50,10 @@ class SQLiteHistory(BaseHistory):
         with self.conn:
             c = self.conn.cursor()
             c.execute('INSERT INTO command(session_id, tty, euid, cwd, \
-                start_time, end_time, duration, command, return_code) VALUES \
-                (?, ?, ?, ?, ?, ?, ?, ?, ?)', (session_id, cmd.tty, cmd.euid,
+                start_time, end_time, duration, command, args, return_code) VALUES \
+                (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)', (session_id, cmd.tty, cmd.euid,
                     cmd.cwd, cmd.start_time, cmd.end_time, cmd.duration,
-                    cmd.command[0], cmd.return_code))
+                    cmd.command, ' '.join(cmd.args), cmd.return_code))
 
     def dump(self):
         with self.conn:
