@@ -56,6 +56,7 @@ class Command:
             if pid: # parent
                 os.waitpid(pid, 0)
             else: # child
+                logging.debug('Exec of %s with %s args' % (self.command, (self.command,) + tuple(self.alias.split()[1:])))
                 os.execvp(self.command, (self.command,) + tuple(self.alias.split()[1:]))
 
         self.return_code = 0
