@@ -6,9 +6,9 @@ import readline
 import traceback
 import termcolor
 
-import config
-import history
-import session
+from mesh import config
+from mesh import history
+from mesh import session
 
 from command import CommandFactory
 
