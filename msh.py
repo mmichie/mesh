@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-
+# uses the following encoding: utf-8
 import logging
 import os
 import readline
@@ -10,7 +10,7 @@ from mesh import config
 from mesh import history
 from mesh import session
 
-from command import CommandFactory
+from mesh.command import CommandFactory
 
 def setup():
 
@@ -23,6 +23,11 @@ def setup():
     readline.parse_and_bind('tab: complete')
     readline.parse_and_bind('set editing-mode vi')
     logging.info('Set readline modes')
+
+    logging.info('Adding previous history to readline')
+    previous_history = history.recorder.dump()
+    for line in previous_history:
+        readline.add_history(line)
 
 def prompt():
     cwd = os.getcwd()

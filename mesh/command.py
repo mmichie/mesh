@@ -5,9 +5,9 @@ import shlex
 import sys
 import time
 
-import config
+from . import config
 
-from alias import aliases
+from . alias import aliases
 
 builtin_cmds = {'cd', 'pwd', 'exit', 'alias', 'echo',}
 
@@ -112,7 +112,7 @@ class ChangeDirectoryBuiltin(Builtin):
         elif self.args[0].startswith('~'):
             os.chdir(os.path.expanduser('~') + '/' + self.args[0][2:])
         else:
-            os.chdir(self.args[1])
+            os.chdir(self.args[0])
 
         os.environ['OLDPWD'] = prev_cwd
         self.return_code = 0

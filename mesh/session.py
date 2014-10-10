@@ -5,8 +5,8 @@ import socket
 import sys
 import time
 
-import config
-import util
+from . import config
+from . import util
 
 class Session:
 

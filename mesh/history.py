@@ -1,7 +1,7 @@
 import abc
 import sqlite3
 
-import config
+from . import config
 
 class BaseHistory:
     __metaclass__  = abc.ABCMeta
@@ -58,6 +58,6 @@ class SQLiteHistory(BaseHistory):
     def dump(self):
         with self.conn:
             c = self.conn.cursor()
-            return c.execute('SELECT * from history')
+            return [r[0] for r in c.execute('select command || " " || args as cmd from command')]
 
 recorder = SQLiteHistory()
