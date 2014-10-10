@@ -6,10 +6,11 @@ import sys
 import time
 
 from . import config
+from . import history
 
 from . alias import aliases
 
-builtin_cmds = {'cd', 'pwd', 'exit', 'alias', 'echo',}
+builtin_cmds = {'cd', 'pwd', 'exit', 'alias', 'echo', 'history',}
 
 class Command:
  
@@ -138,6 +139,16 @@ class ExitBuiltin(Builtin):
         self.return_code = 0
         logging.debug('Built in exit')
 
+class HistoryBuiltin(Builtin):
+    def run(self):
+        self.start_time = time.time()
+        self.end_time = time.time()
+        for line in history.recorder.dump():
+            print(line)
+        self.duration = self.end_time - self.start_time
+        self.return_code = 0
+        logging.debug('Built in exit')
+
 class CommandFactory:
 
     def create_command(command_text):
@@ -153,6 +164,8 @@ class CommandFactory:
             return ExitBuiltin(command_text)
         elif command_split[0] == 'echo':
             return EchoBuiltin(command_text)
+        elif command_split[0] == 'history':
+            return HistoryBuiltin(command_text)
         else:
             return Command(command_text)
 
