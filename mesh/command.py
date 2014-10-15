@@ -52,15 +52,25 @@ class Command:
             self.return_code = os.system(self.alias)
         else:
             logging.debug('Running through fork/exec')
-            pid = os.fork()
+            child_pid = os.fork()
             
-            if pid: # parent
-                os.waitpid(pid, 0)
+            if child_pid: # parent
+                logging.debug('Waiting for %s' % child_pid)
+                pid, status = os.waitpid(child_pid, 0)
             else: # child
                 logging.debug('Exec of %s with %s args' % (self.command, (self.command,) + tuple(self.alias.split()[1:])))
-                os.execvp(self.command, (self.command,) + tuple(self.alias.split()[1:]))
+                try:
+                    os.execvp(self.command, (self.command,) + tuple(self.alias.split()[1:]))
+                    os._exit(0)
+                except FileNotFoundError:
+                    logging.exception('File not found')
+                    print('Command not found')
+                    os._exit(1)
+                except:
+                    logging.exception('Unknown exception encountered')
+                    os._exit(1)
 
-        self.return_code = 0
+        self.return_code = status
         self.end_time = time.time()
         self.duration = self.end_time - self.start_time
 
