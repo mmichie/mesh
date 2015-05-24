@@ -48,10 +48,11 @@ if __name__ == "__main__":
 
     setup()
     session = session.Session()
+    command_factory = CommandFactory()
 
     while True:
         try:
-            command = CommandFactory.create_command(read_command())
+            command = command_factory.create_command(read_command())
             command.run()
             record_command(command, session.session_id)
         except KeyboardInterrupt:

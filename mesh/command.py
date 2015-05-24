@@ -10,7 +10,6 @@ from . import history
 
 from . alias import aliases
 
-builtin_cmds = {'cd', 'pwd', 'exit', 'alias', 'echo', 'history',}
 
 class Command:
  
@@ -160,22 +159,24 @@ class HistoryBuiltin(Builtin):
         logging.debug('Built in exit')
 
 class CommandFactory:
+    builtin_cmds = {
+        'cd'      : ChangeDirectoryBuiltin,
+        'pwd'     : PrintWorkingDirectoryBuiltin,
+        'exit'    : ExitBuiltin,
+        'alias'   : NullCommand,
+        'echo'    : EchoBuiltin,
+        'history' : HistoryBuiltin,
+    }
 
-    def create_command(command_text):
+    def create_command(self, command_text):
         command_split = command_text.split()
 
         if len(command_split) == 0:
             return NullCommand(command_text)
-        elif command_split[0] == 'cd':
-            return ChangeDirectoryBuiltin(command_text)
-        elif command_split[0] == 'pwd':
-            return PrintWorkingDirectoryBuiltin(command_text)
-        elif command_split[0] == 'exit':
-            return ExitBuiltin(command_text)
-        elif command_split[0] == 'echo':
-            return EchoBuiltin(command_text)
-        elif command_split[0] == 'history':
-            return HistoryBuiltin(command_text)
+
+        if command_split[0] in self.builtin_cmds:
+            return self.builtin_cmds[command_split[0]](command_text)
         else:
             return Command(command_text)
 
+# vim: tabstop=8 expandtab shiftwidth=4 softtabstop=4
