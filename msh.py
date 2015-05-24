@@ -67,4 +67,4 @@ if __name__ == "__main__":
             logging.exception('Uncaught exception')
             traceback.print_exc()
 
-# vim: set ft=python:
+# vim: tabstop=8 expandtab shiftwidth=4 softtabstop=4

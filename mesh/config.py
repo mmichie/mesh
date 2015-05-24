@@ -6,3 +6,5 @@ no_fork_mode = False
 
 if not os.path.exists(mesh_dir):
     os.makedirs(mesh_dir)
+
+# vim: tabstop=8 expandtab shiftwidth=4 softtabstop=4

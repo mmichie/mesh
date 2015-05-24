@@ -61,3 +61,5 @@ class SQLiteHistory(BaseHistory):
             return [r[0] for r in c.execute('select command || " " || args as cmd from command')]
 
 recorder = SQLiteHistory()
+
+# vim: tabstop=8 expandtab shiftwidth=4 softtabstop=4

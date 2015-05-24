@@ -70,3 +70,5 @@ class Session:
             q = query_str.format(",".join(columns),",".join("?"*len(values)))
             c.execute(q, values)
             self.session_id = c.lastrowid
+
+# vim: tabstop=8 expandtab shiftwidth=4 softtabstop=4

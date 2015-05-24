@@ -7,3 +7,5 @@ def get_local_ip():
     s.close()
 
     return ip
+
+# vim: tabstop=8 expandtab shiftwidth=4 softtabstop=4
