@@ -16,7 +16,7 @@ class Command:
     def __init__(self, command_text):
         self.text = command_text
         self.parsed = self.parse_command(command_text)
-        self.command = self.parsed[0]
+        self.command = '' if len(self.parsed) == 0 else self.parsed[0]
         self.args = [] if len(self.parsed) < 2 else self.parsed[1:]
         self.alias = self.substitute_alias()
 
@@ -74,6 +74,9 @@ class Command:
         self.duration = self.end_time - self.start_time
 
 class NullCommand(Command):
+    def help(self):
+        return ''
+
     def __init__(self, command_text):
         self.text = command_text
         self.command = ''
@@ -92,6 +95,10 @@ class NullCommand(Command):
 class Builtin(Command): pass
 
 class EchoBuiltin(Builtin):
+
+    def help(self):
+        return 'Echo a string'
+
     def run(self):
         self.start_time = time.time()
         if shutil.which('echo'):
@@ -106,6 +113,9 @@ class EchoBuiltin(Builtin):
         self.duration = self.end_time - self.start_time
 
 class ChangeDirectoryBuiltin(Builtin):
+    def help(self):
+        return 'Change directory'
+
     def run(self):
         self.start_time = time.time()
         prev_cwd = os.getcwd()
@@ -131,6 +141,9 @@ class ChangeDirectoryBuiltin(Builtin):
         logging.debug('Built in chdir to: %s' % self.args[0])
 
 class PrintWorkingDirectoryBuiltin(Builtin):
+    def help(self):
+        return 'Print current working directory'
+
     def run(self):
         self.start_time = time.time()
         print(os.getcwd())
@@ -140,6 +153,9 @@ class PrintWorkingDirectoryBuiltin(Builtin):
         logging.debug('Built in pwd')
 
 class ExitBuiltin(Builtin):
+    def help(self):
+        return 'Exit the shell'
+
     def run(self):
         self.start_time = time.time()
         sys.exit()
@@ -149,6 +165,9 @@ class ExitBuiltin(Builtin):
         logging.debug('Built in exit')
 
 class HistoryBuiltin(Builtin):
+    def help(self):
+        return 'Print History'
+
     def run(self):
         self.start_time = time.time()
         self.end_time = time.time()
@@ -157,6 +176,23 @@ class HistoryBuiltin(Builtin):
         self.duration = self.end_time - self.start_time
         self.return_code = 0
         logging.debug('Built in exit')
+
+class HelpBuiltin(Builtin):
+    def help(self):
+        return 'Print Help'
+
+    def run(self):
+        self.start_time = time.time()
+        self.end_time = time.time()
+        help_text = [ (name, builtin('').help()) for name, builtin in self.builtins.items() ]
+        print('-=' * 50)
+        for builtin_name, builtin_text in help_text:
+            print('%s\t\t\t%s' % (builtin_name, builtin_text))
+        print('-=' * 50)
+        self.duration = self.end_time - self.start_time
+        self.return_code = 0
+        logging.debug('Built in help')
+
 
 class CommandFactory:
     builtin_cmds = {
@@ -174,7 +210,11 @@ class CommandFactory:
         if len(command_split) == 0:
             return NullCommand(command_text)
 
-        if command_split[0] in self.builtin_cmds:
+        if command_split[0] == 'help':
+            help = HelpBuiltin(command_text)
+            help.builtins = self.builtin_cmds
+            return help
+        elif command_split[0] in self.builtin_cmds:
             return self.builtin_cmds[command_split[0]](command_text)
         else:
             return Command(command_text)
